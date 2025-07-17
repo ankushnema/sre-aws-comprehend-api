@@ -1,0 +1,15 @@
+# .gitignore for AWS SRE/AI project
+.terraform/
+terraform.tfstate*
+*.tfvars
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+ENV/
+env/
+*.zip
+.DS_Store
+*.log

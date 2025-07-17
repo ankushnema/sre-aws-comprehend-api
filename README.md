@@ -17,6 +17,33 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
 - See `RUN_GUIDE.md` for step-by-step run the project.
 ---
 
+## Details about iam.tf
+
+### IAM Relationship Diagram
+
+```plaintext
++---------------------------+
+|     Lambda Function       |
++-----------+---------------+
+            |
+     assumes role
+            v
++---------------------------+
+|   IAM Role: lambda_exec   |
++-----------+---------------+
+            |
+ attached policy
+            v
++-------------------------------+
+| IAM Policy: lambda_comprehend |
+|  - comprehend:Detect*         |
+|  - logs:CreateLogGroup        |
+|  - logs:PutLogEvents          |
++-------------------------------+
+
+
+
+
 ## 📚 SRE/DevOps Best Practices (tracked throughout project)
 - SLOs and Error Budgets
 - CloudWatch alarms, dashboards, and logs

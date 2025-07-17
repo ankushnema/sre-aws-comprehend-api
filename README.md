@@ -85,6 +85,73 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
 5. **Lambda** returns the analysis result back to **API Gateway**, which then replies to the client.
 
 
+## Lambda Function Overview
+
+- **Language:** Python 3.11
+- **Purpose:** Handles POST requests to `/analyze` endpoint, analyzes text using Amazon Comprehend, returns sentiment.
+- **Key Points:**
+  - Uses `boto3` (AWS SDK for Python) to call Comprehend.
+  - Reads region from environment variable (`AWS_REGION`), making it portable.
+  - Handles errors and returns user-friendly messages.
+  - Logs errors to CloudWatch by default (`print` statements).
+
+---
+
+### 🟢 Lambda Function Internal Flow
+
+```plaintext
++-----------------------------+
+|  Lambda Handler Invoked     |
+|  (lambda_handler)           |
++-----------------------------+
+             |
+    Receives API Gateway event
+             |
++------------v-------------+
+| Parse event['body'] JSON |
++------------+-------------+
+             |
+   Extract "text" from body
+             |
++------------v-------------+
+|  Validate: text present? |
++------------+-------------+
+   |                     |
+  Yes                   No
+   |                     |
+   v                     v
+Analyze text         Return 400
+with Comprehend      error: "No text"
+   |
+   v
++------------------------------+
+| Call boto3.comprehend        |
+| .detect_sentiment()          |
++------------------------------+
+   |
+   v
++------------------------------+
+| Return 200 w/ sentiment      |
+| & SentimentScore as JSON     |
++------------------------------+
+             |
+           (if any exception)
+             |
+   +---------v----------+
+   | Return 500 error   |
+   +--------------------+
+
+
+```
+#### 📝 Lambda Workflow Summary
+
+- The Lambda function is triggered by API Gateway and receives the request event.
+- It parses the incoming JSON, checks for a `"text"` key, and validates input.
+- If the input is valid, it calls Amazon Comprehend using `boto3` to perform sentiment analysis.
+- The function returns the sentiment result (and score) as a JSON response.
+- If `"text"` is missing or an error occurs, the function returns a relevant error message with the correct HTTP status code.
+
+
 
 
 

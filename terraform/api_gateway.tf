@@ -60,7 +60,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 }
 
 resource "aws_api_gateway_stage" "prod" {
-  d# Associate this stage with the most recent deployment above
+  # Associate this stage with the most recent deployment above
   deployment_id = aws_api_gateway_deployment.api_deployment.id
 
   # Reference to the same REST API as above

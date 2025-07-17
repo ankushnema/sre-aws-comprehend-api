@@ -45,16 +45,35 @@ resource "aws_api_gateway_integration" "lambda_integration" {
   uri                     = aws_lambda_function.analyze_text.invoke_arn
 }
 
+
+
 # ------------------------------
 # API Deployment & Stage
 # What: Deploys API and exposes it at a live URL (prod stage).
 # Why: Required to make API accessible to users.
 # SRE: Enables environment separation (staging, prod).
 resource "aws_api_gateway_deployment" "api_deployment" {
+  # Wait for Lambda integration to be ready before deploying
   depends_on  = [aws_api_gateway_integration.lambda_integration]
+  # Link to your API Gateway REST API resource
   rest_api_id = aws_api_gateway_rest_api.comprehend_api.id
-  stage_name  = "prod"
 }
+
+resource "aws_api_gateway_stage" "prod" {
+  d# Associate this stage with the most recent deployment above
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
+
+  # Reference to the same REST API as above
+  rest_api_id   = aws_api_gateway_rest_api.comprehend_api.id
+
+  # Name of the stage shown in your API Gateway endpoint URL (/prod)
+  stage_name    = "prod"
+
+  # SRE NOTE: Stages are like environments ("dev", "test", "prod")—
+  # lets you manage, promote, or configure features separately per stage.
+}
+
+
 
 # ------------------------------
 # Lambda Permission for API Gateway

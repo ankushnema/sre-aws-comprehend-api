@@ -42,6 +42,7 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
 +-------------------------------+
 
 ```
+---
 
 ## Details about api_gateway.tf
 
@@ -84,6 +85,9 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
 4. **Lambda** uses the AWS SDK (`boto3`) to call **Amazon Comprehend** for sentiment or key phrase analysis.
 5. **Lambda** returns the analysis result back to **API Gateway**, which then replies to the client.
 
+---
+
+## Details about lambda_function.tf
 
 ## Lambda Function Overview
 
@@ -95,7 +99,6 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
   - Handles errors and returns user-friendly messages.
   - Logs errors to CloudWatch by default (`print` statements).
 
----
 
 ### 🟢 Lambda Function Internal Flow
 
@@ -151,6 +154,89 @@ with Comprehend      error: "No text"
 - The function returns the sentiment result (and score) as a JSON response.
 - If `"text"` is missing or an error occurs, the function returns a relevant error message with the correct HTTP status code.
 
+---
+
+## Lambda Function Infrastructure (`lambda.tf`)
+
+This file defines and deploys the AWS Lambda function used for text analysis with Amazon Comprehend.
+
+**Key Points:**
+- **filename:** Points to the zipped Lambda code (`lambda_function_payload.zip`).
+- **function_name:** Name used for the Lambda in AWS Console.
+- **role:** The IAM role (declared in `iam.tf`) giving Lambda permissions to call Comprehend and write logs.
+- **handler:** The Python file and function Lambda will invoke (`lambda_function.lambda_handler`).
+- **runtime:** Python version used for the function (here, Python 3.11).
+- **environment variables:** Used to set config (like AWS region) for portability.
+- **timeout:** Sets max runtime (in seconds) for each Lambda invocation.
+- **source_code_hash:** Detects code changes so Terraform updates Lambda when needed.
+
+### 🟢 Lambda Deployment & Workflow
+
+```plaintext
+          +---------------------------+
+          |   lambda.tf (Terraform)   |
+          +------------+--------------+
+                       |
+             [terraform apply]
+                       |
+     Provisions Lambda function in AWS
+                       |
+          +------------v-------------+
+          |     Lambda Function      |
+          |   (analyze_text)         |
+          +------------+-------------+
+                       |
+          Receives events from API Gateway
+                       |
+          +------------v-------------+
+          |  Runs Python handler     |
+          |  (lambda_function.py)    |
+          +------------+-------------+
+                       |
+        Calls Amazon Comprehend for analysis
+                       |
+          +------------v-------------+
+          | Returns result to caller |
+          +-------------------------+
+```
+
+---
+
+## Details about Outputs.tf
+
+## Outputs (`outputs.tf`)
+
+The `outputs.tf` file defines important resource details that Terraform will display after a successful deployment.  
+This helps you quickly access critical information (like your API endpoint) without hunting in the AWS Console.
+
+**Key Outputs:**
+- **api_url**: The full API Gateway endpoint for sending POST requests to your Lambda-backed service.
+- **lambda_function_name**: The name of the deployed Lambda function, useful for monitoring, logging, or troubleshooting.
+
+---
+
+### 📤 Outputs Workflow
+
+```plaintext
++------------------------+
+|   terraform apply      |
++-----------+------------+
+            |
+   [Deploys all resources]
+            |
++-----------v------------+
+|   Terraform finishes   |
+|   and prints outputs   |
++-----------+------------+
+            |
+     [You copy/paste]
+            |
++-----------v------------+
+|  Use outputs directly  |
+|  (e.g., test API URL)  |
++------------------------+
+```
+---
 
 
 

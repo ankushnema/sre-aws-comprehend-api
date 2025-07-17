@@ -1,0 +1,6 @@
+Step	What’s Included
+1	Project skeleton, repo, prerequisites (brew, terraform, awscli) - done
+2	AWS CLI configuration - done
+3	Lambda code written & zipped - done
+4	Terraform files created and ready - done
+5	Deploying with Terraform - In progress

@@ -4,11 +4,17 @@ A production-grade, SRE-focused, fully serverless REST API for AI-powered text a
 
 ---
 
-## 🌟 Features
-- Free-tier, cost-optimized, scalable, and interview-ready
-- Input: POST text to REST API endpoint
-- Analysis: Lambda triggers Amazon Comprehend (sentiment, entities, key phrases)
-- SRE Best Practices: SLOs, alerting, logging, monitoring, security, DLQ, runbook, and more
+## 🌟 Project Focus & Concepts
+
+This project demonstrates and practices key principles in modern cloud and site reliability engineering, including:
+
+- **Cloud infrastructure automation** (Terraform, Infrastructure as Code)
+- **Service reliability and SRE best practices** (error budgets, SLOs, runbooks)
+- **Observability** (CloudWatch logging, metrics, alerting)
+- **FinOps and cost awareness** (resource optimization, lifecycle policies)
+- **Remote-first collaboration** (detailed docs, automation scripts, onboarding guides)
+
+Every module and workflow is designed to highlight automation, reliability, cost efficiency, and effective documentation—principles essential for any modern engineering team.
 
 ---
 

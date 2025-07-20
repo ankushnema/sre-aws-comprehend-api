@@ -28,12 +28,6 @@ resource "aws_lambda_function" "analyze_text" {
   # Timeout in seconds (how long Lambda can run per invocation)
   timeout          = 10
 
-  # Environment variables for your code (best practice: use for config/region/etc.)
-  environment {
-    variables = {
-      AWS_REGION = "us-east-1"
-    }
-  }
 }
 
 # -----------------------------------------------------------
